@@ -214,7 +214,8 @@ class SyncServer
      */
     private function getServerData(): array
     {
-        $url = 'https://' . $this->server->api_domain . '/graphql';
+        //$url = 'https://' . $this->server->api_domain . '/graphql';
+        $url = 'http://' . $this->server->api_domain . '/graphql';
 
         $gql = (new Query('SyncServer'))
             ->setSelectionSet([
