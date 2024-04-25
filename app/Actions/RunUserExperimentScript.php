@@ -6,6 +6,7 @@ use App\Exceptions\BusinessLogicException;
 use App\Models\Device;
 use App\Models\DeviceType;
 use App\Models\Schema;
+use App\Models\Demo;
 use App\Models\Server;
 use App\Models\Software;
 use App\Models\User;
@@ -39,6 +40,7 @@ class RunUserExperimentScript
      * @param array $inputs
      * @param Software $software
      * @param Schema|null $schema
+     * @param Demo|null $demo
      * @param UserExperiment|null $userExperiment
      * @return array
      * @throws BusinessLogicException
@@ -46,7 +48,7 @@ class RunUserExperimentScript
      */
     public function execute(
         Authenticatable $user, Server $server, DeviceType $deviceType, Device $device, string $scriptName,
-        array $inputs, Software $software, ?Schema $schema = null, ?UserExperiment $userExperiment = null
+        array $inputs, Software $software, ?Schema $schema = null, ?Demo $demo = null, ?UserExperiment $userExperiment = null
     ): array
     {
         $schemaName = null;
@@ -56,7 +58,12 @@ class RunUserExperimentScript
             $schemaName = $uploadResponse['name'];
         }
 
-        // $url = 'https://' . $server->api_domain . '/graphql';
+        $demoName = null;
+        if($demo && $scriptName === 'start') {
+            $demoPath = $demo->getMedia('demo')[0]->getPath();
+            $uploadResponse = $this->uploadDemo($demoPath, $server);
+            $demoName = $uploadResponse['name'];
+        }
         $url = 'http://' . $server->api_domain . '/graphql';
 
         $mutationName = match ($scriptName) {
@@ -72,6 +79,7 @@ class RunUserExperimentScript
                         scriptName: "'. $scriptName .'",
                         inputParameter: "'. $this->userExperimentService->getInputString($inputs) .'",
                         fileName: "'. $schemaName .'",
+                        demoName: "'. $demoName .'",
                         experimentID: "'. $userExperiment?->remote_id .'"
                         device: {
                             deviceName: "'. $deviceType->name .'",
@@ -115,6 +123,26 @@ class RunUserExperimentScript
         $guzzleClient = new \GuzzleHttp\Client(['base_uri' => 'http://' . $server->api_domain]);
         
         $response = $guzzleClient->request('POST', '/api/schema/upload', [
+            'headers' => [
+                'Accept' => 'application/json',
+            ],
+            'multipart' => [
+                [
+                    'name' => 'file',
+                    'contents' => fopen($filePath, 'r')
+                ]
+            ]
+        ]);
+
+        return json_decode($response->getBody()->getContents(), true);
+    }
+
+    private function uploadDemo(string $filePath, Server $server): array
+    {
+        // $guzzleClient = new \GuzzleHttp\Client(['base_uri' => 'https://' . $server->api_domain]);
+        $guzzleClient = new \GuzzleHttp\Client(['base_uri' => 'http://' . $server->api_domain]);
+        
+        $response = $guzzleClient->request('POST', '/api/demo/upload', [
             'headers' => [
                 'Accept' => 'application/json',
             ],

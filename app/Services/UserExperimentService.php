@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Models\Experiment;
 use App\Models\Schema;
+use App\Models\Demo;
 
 class UserExperimentService
 {
@@ -12,9 +13,10 @@ class UserExperimentService
      * @param Experiment $experiment
      * @param string $scriptName
      * @param Schema|null $schema
+     * @param Demo|null $demo
      * @return mixed
      */
-    public function formatInput(array $inputs, Experiment $experiment, string $scriptName, ?Schema $schema = null): array
+    public function formatInput(array $inputs, Experiment $experiment, string $scriptName, ?Schema $schema = null, ?Demo $demo = null): array
     {
         $commandArguments = [];
         foreach ($experiment->experiment_commands as $command) {
@@ -109,7 +111,8 @@ class UserExperimentService
             // $result .= $input['name'] . ':' . $input['value'] . ',';
             // $result .= $input['name'] . ':' . str_replace(["\r\n", "\n", "\r"], "", $input['value']) . ',';
             $escapedValue = str_replace("\n", "\\n", $input['value']);
-            $result .= $input['name'] . ':' . $escapedValue . ',';        }
+            $result .= $input['name'] . ':' . $escapedValue . ',';
+        }
 
         return substr($result, 0, -1) ;
     }
