@@ -33,6 +33,7 @@ type Demo {
     created_at: DateTime!
     updated_at: DateTime!
     deleted_at: DateTime
+    visible_preview: Boolean
 }
 
 input CreateDemoInput @validator {
@@ -41,6 +42,7 @@ input CreateDemoInput @validator {
     software_id: ID!
     note: String
     demo: Upload
+    visible_preview: Boolean
 }
 
 input UpdateDemoInput @validator {
@@ -50,6 +52,7 @@ input UpdateDemoInput @validator {
     software_id: ID!
     note: String
     demo: Upload
+    visible_preview: Boolean
 }
 
 

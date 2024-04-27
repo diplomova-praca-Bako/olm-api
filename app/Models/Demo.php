@@ -21,6 +21,7 @@ class Demo extends Model implements HasMedia
         'device_type_id',
         'software_id',
         'note',
+        'visible_preview'
     ];
 
     /**
