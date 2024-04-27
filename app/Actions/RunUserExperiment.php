@@ -73,7 +73,7 @@ class RunUserExperiment
                 'input' => $this->userExperimentService->getInputArray($scriptName, $inputs),
                 'simulation_time' => $simulationTime,
                 'sampling_rate' => $samplingRate,
-                'filled' => null,
+                'filled' => (strpos($deviceType['name'], 'L3Dcube') !== false) ? true : null,
                 'remote_id' => (int)$result['experimentID'],
             ]);
         }
