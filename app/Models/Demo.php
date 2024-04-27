@@ -47,7 +47,8 @@ class Demo extends Model implements HasMedia
         $this->addMediaCollection('demo')
             ->acceptsMimeTypes([
                 'text/xml',
-                'text/plain'
+                'text/plain',
+                'text/csv'
             ])
             ->singleFile();
     }
