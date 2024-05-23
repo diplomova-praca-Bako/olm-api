@@ -29,8 +29,8 @@ class GetVideoStreamStatus
 
     private function getVideoStreamStatus($deviceId): array
     {
-        // $url = 'https://' . $this->server->api_domain . '/graphql';
-        $url = 'http://' . $this->server->api_domain . '/graphql';
+        $url = 'https://' . $this->server->api_domain . '/graphql';
+        // $url = 'http://' . $this->server->api_domain . '/graphql';
 
         $gql = (new Query('videoStreamStatus'))
             ->setArguments([
